@@ -45,19 +45,7 @@ notification.innerHTML=`
     `;setTimeout(()=>notification.classList.add("show"),100);setTimeout(()=>hideNotification(notification),5000);notification.querySelector(".notification-close").addEventListener("click",()=>{hideNotification(notification)})}
 function hideNotification(notification){notification.classList.add("hide");setTimeout(()=>{if(notification.parentNode){notification.parentNode.removeChild(notification)}},300)}
 function getNotificationIcon(type){const icons={success:"check-circle",error:"exclamation-circle",warning:"exclamation-triangle",info:"info-circle",};return icons[type]||icons.info}
-function setupBackToTop(){
-    const backToTopButton=document.getElementById("back-to-top");
-    if(!backToTopButton)return;
-    const throttledScrollHandler=throttle(function(){
-        if(window.scrollY>50){
-            backToTopButton.classList.add("visible")
-        }else{
-            backToTopButton.classList.remove("visible")
-        }
-    },16);
-    window.addEventListener("scroll",throttledScrollHandler);
-    backToTopButton.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth",})})
-}
+function setupBackToTop(){const backToTopButton=document.getElementById("back-to-top");if(!backToTopButton)return;const throttledScrollHandler=throttle(function(){if(window.scrollY>50){backToTopButton.classList.add("visible")}else{backToTopButton.classList.remove("visible")}},16);window.addEventListener("scroll",throttledScrollHandler);backToTopButton.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth",})})}
 function setupThemeHandling(){const savedTheme=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",savedTheme);window.toggleTheme=function(){const currentTheme=document.documentElement.getAttribute("data-theme");const newTheme=currentTheme==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",newTheme);localStorage.setItem("theme",newTheme)};optimizeFontLoading()}
 function optimizeFontLoading(){const style=document.createElement('style');const mobileOptimizations=isMobileDevice()?`
         /* Mobile-specific optimizations */
@@ -130,47 +118,7 @@ function closeResumeModal(){const resumeModal=document.getElementById("resume-mo
 if(typeof module!=="undefined"&&module.exports){module.exports={validateField,validateForm,showNotification,debounce,throttle,}}
 const phrases=["Freelance Data Analyst","Power BI Developer","Excel Dashboard Specialist","Data Cleaning Expert","Python + AI Analyst",];let currentPhrase=0;let currentChar=0;let isDeleting=!1;const typeSpeed=100;const eraseSpeed=50;const delayBetween=1500;function initTypewriter(){const el=document.querySelector(".typewriter-text");if(!el){return}
 function type(){const phrase=phrases[currentPhrase];if(!isDeleting){el.textContent=phrase.slice(0,currentChar+1);currentChar++;if(currentChar===phrase.length){isDeleting=!0;setTimeout(type,delayBetween)}else{setTimeout(type,typeSpeed)}}else{el.textContent=phrase.slice(0,currentChar);currentChar--;if(currentChar===0){isDeleting=!1;currentPhrase=(currentPhrase+1)%phrases.length;setTimeout(type,typeSpeed)}else{setTimeout(type,eraseSpeed)}}}
-type()}
-
-
-
-// Projects page: Dynamically render projects grouped by category from projects.json
-(function() {
-    const list = document.getElementById('projects-list');
-    const btns = document.getElementById('category-buttons');
-    if (!list || !btns) return;
-    fetch('projects.json')
-        .then(res => res.json())
-        .then(projects => {
-            list.innerHTML = '';
-            btns.innerHTML = '';
-            // Group projects by category
-            const grouped = {};
-            projects.forEach(proj => {
-                const cat = proj.category || 'Other';
-                if (!grouped[cat]) grouped[cat] = [];
-                grouped[cat].push(proj);
-            });
-            // Create buttons for each category
-            const categories = Object.keys(grouped);
-            categories.forEach(category => {
-                const btn = document.createElement('button');
-                btn.textContent = category;
-                btn.className = 'category-scroll-btn';
-                btn.onclick = function() {
-                    const heading = document.getElementById('cat-' + category.replace(/\s+/g, '-').toLowerCase());
-                    if (heading) {
-                        heading.scrollIntoView({behavior:'smooth',block:'start'});
-                    }
-                };
-                btns.appendChild(btn);
-            });
-            // Render each group
-            categories.forEach(category => {
-                list.innerHTML += `<h2 class="project-category-heading" id="cat-${category.replace(/\s+/g, '-').toLowerCase()}">${category}</h2>`;
-                grouped[category].slice().reverse().forEach(proj => {
-                    const techTags = proj.tech.map(tag => `<span class="tech-tag" itemprop="keywords">${tag}</span>`).join('\n');
-                    const card = `
+type()}(function(){const list=document.getElementById('projects-list');const btns=document.getElementById('category-buttons');if(!list||!btns)return;fetch('projects.json').then(res=>res.json()).then(projects=>{list.innerHTML='';btns.innerHTML='';const grouped={};projects.forEach(proj=>{const cat=proj.category||'Other';if(!grouped[cat])grouped[cat]=[];grouped[cat].push(proj)});const categories=Object.keys(grouped);categories.forEach(category=>{const btn=document.createElement('button');btn.textContent=category;btn.className='category-scroll-btn';btn.onclick=function(){const heading=document.getElementById('cat-'+category.replace(/\s+/g,'-').toLowerCase());if(heading){heading.scrollIntoView({behavior:'smooth',block:'start'})}};btns.appendChild(btn)});categories.forEach(category=>{list.innerHTML+=`<h2 class="project-category-heading" id="cat-${category.replace(/\s+/g, '-').toLowerCase()}">${category}</h2>`;grouped[category].slice().reverse().forEach(proj=>{const techTags=proj.tech.map(tag=>`<span class="tech-tag" itemprop="keywords">${tag}</span>`).join('\n');const card=`
 <article class="project-card" itemscope itemtype="https://schema.org/CreativeWork">
   <div class="project-image">
     <img src="${proj.image}" alt="${proj.alt}" loading="lazy" itemprop="image" />
@@ -191,9 +139,4 @@ type()}
     </div>
   </div>
 </article>
-`;
-                    list.innerHTML += card;
-                });
-            });
-        });
-})();
+`;list.innerHTML+=card})})})})()
