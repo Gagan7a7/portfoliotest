@@ -1,0 +1,8 @@
+const preconnectLinks=['https://fonts.googleapis.com','https://fonts.gstatic.com','https://cdnjs.cloudflare.com'];function addPreconnects(){preconnectLinks.forEach(url=>{const link=document.createElement('link');link.rel='preconnect';link.href=url;if(url.includes('gstatic'))link.crossOrigin='anonymous';document.head.appendChild(link)})}
+if('requestIdleCallback' in window){requestIdleCallback(addPreconnects)}else{setTimeout(addPreconnects,0)}
+if(document.readyState==='loading'){document.addEventListener("DOMContentLoaded",initializePortfolio)}else{initializePortfolio()}
+const passiveIfSupported=supportsPassive()?{passive:!0}:!1;function supportsPassive(){let supportsPassive=!1;try{const opts=Object.defineProperty({},'passive',{get:function(){supportsPassive=!0}});window.addEventListener("testPassive",null,opts);window.removeEventListener("testPassive",null,opts)}catch(e){}
+return supportsPassive}
+function initializePortfolio(){const fragment=document.createDocumentFragment();try{handleLoading();setupNavigation();setupScrollEffects();setupAnimations();setupContactForm();setupBackToTop();setupThemeHandling();const resumeModal=document.getElementById("resume-modal");if(resumeModal){try{setupResumeModal()}catch(error){console.warn('Resume modal setup failed:',error)}}
+const typewriterElement=document.querySelector(".typewriter-text");if(typewriterElement){const shouldRunTypewriter=optimizeForMobile();if(shouldRunTypewriter!==!1){requestAnimationFrame(()=>{setTimeout(initTypewriter,isMobileDevice()?1000:500)})}}}catch(error){console.warn('Portfolio initialization error:',error)}}
+// ...rest of script.js content...

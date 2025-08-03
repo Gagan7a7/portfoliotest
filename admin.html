@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Project Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: var(--gradient-bg);
+            color: var(--light-text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .admin-container {
+            max-width: 520px;
+            margin: 60px auto;
+            padding: 36px 32px 32px 32px;
+            background: rgb(25 25 40 / 0.85);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: #fff0;
+        }
+        .admin-form label {
+            display: block;
+            margin-top: 18px;
+            color: var(--light-text);
+            font-weight: 500;
+        }
+        .admin-form input, .admin-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 6px;
+            background: rgb(35 40 55 / 0.9);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .admin-form input:focus, .admin-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgb(74 144 226 / 0.15);
+        }
+        .admin-form button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+        }
+        .admin-form button[type="button"] {
+            background: var(--secondary-color);
+            color: #fff;
+            margin-left: 10px;
+        }
+        .admin-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgb(74 144 226 / 0.18);
+        }
+        .project-list {
+            margin-top: 36px;
+            background: rgb(35 40 55 / 0.7);
+            border-radius: 10px;
+            padding: 18px 12px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+        }
+        .project-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .project-item:last-child {
+            border-bottom: none;
+        }
+        .project-item b {
+            color: var(--secondary-color);
+            font-size: 1.08rem;
+        }
+        .project-item button {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            margin-left: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .project-item button:hover {
+            background: var(--primary-color);
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: var(--accent-color);
+            margin-top: 10px;
+            font-size: 0.98rem;
+        }
+        #login-section input[type="password"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 600px) {
+            .admin-container {
+                padding: 18px 6px 18px 6px;
+            }
+            .project-list {
+                padding: 10px 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h2>Admin Project Manager</h2>
+        <div id="login-section">
+            <label for="admin-password">Enter Admin Password:</label>
+            <input type="password" id="admin-password" />
+            <button onclick="login()">Login</button>
+            <div id="login-error" class="error"></div>
+        </div>
+        <div id="admin-section" class="hidden">
+            <form class="admin-form" id="project-form">
+                <input type="hidden" id="edit-index" />
+                <label>Title: <input type="text" id="title" required /></label>
+                <label>Image Path: <input type="text" id="image" required /></label>
+                <label>Alt Text: <input type="text" id="alt" required /></label>
+                <label>Dashboard URL: <input type="url" id="dashboardUrl" required /></label>
+                <label>Code URL: <input type="url" id="codeUrl" required /></label>
+                <label>Description: <textarea id="description" required></textarea></label>
+                <label>Tech Tags (comma separated): <input type="text" id="tech" required /></label>
+                <button type="submit">Save Project</button>
+                <button type="button" onclick="resetForm()">Reset</button>
+            </form>
+            <div class="project-list" id="project-list"></div>
+        </div>
+    </div>
+    <script>
+        // Simple password (change this to your own secret)
+        const ADMIN_PASSWORD = 'MyPortfolio@P@ssword77';
+        function login() {
+            const input = document.getElementById('admin-password').value;
+            if (input === ADMIN_PASSWORD) {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                loadProjects();
+            } else {
+                document.getElementById('login-error').textContent = 'Incorrect password.';
+            }
+        }
+        // Load projects from JSON
+        let projects = [];
+        function loadProjects() {
+            fetch('projects.json')
+                .then(res => res.json())
+                .then(data => {
+                    projects = data;
+                    renderProjects();
+                });
+        }
+        function renderProjects() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = '';
+            projects.forEach((proj, idx) => {
+                const div = document.createElement('div');
+                div.className = 'project-item';
+                div.innerHTML = `<b>${proj.title}</b> <button onclick="editProject(${idx})">Edit</button> <button onclick="deleteProject(${idx})">Delete</button>`;
+                list.appendChild(div);
+            });
+        }
+        document.getElementById('project-form').onsubmit = function(e) {
+            e.preventDefault();
+            const idx = document.getElementById('edit-index').value;
+            const proj = {
+                title: document.getElementById('title').value,
+                image: document.getElementById('image').value,
+                alt: document.getElementById('alt').value,
+                dashboardUrl: document.getElementById('dashboardUrl').value,
+                codeUrl: document.getElementById('codeUrl').value,
+                description: document.getElementById('description').value,
+                tech: document.getElementById('tech').value.split(',').map(t => t.trim())
+            };
+            if (idx === '') {
+                projects.push(proj);
+            } else {
+                projects[idx] = proj;
+            }
+            renderProjects();
+            resetForm();
+            alert('Note: For static sites, you must manually update projects.json with the new data below.');
+            console.log(JSON.stringify(projects, null, 2));
+        };
+        function editProject(idx) {
+            const proj = projects[idx];
+            document.getElementById('edit-index').value = idx;
+            document.getElementById('title').value = proj.title;
+            document.getElementById('image').value = proj.image;
+            document.getElementById('alt').value = proj.alt;
+            document.getElementById('dashboardUrl').value = proj.dashboardUrl;
+            document.getElementById('codeUrl').value = proj.codeUrl;
+            document.getElementById('description').value = proj.description;
+            document.getElementById('tech').value = proj.tech.join(', ');
+        }
+        function deleteProject(idx) {
+            if (confirm('Delete this project?')) {
+                projects.splice(idx, 1);
+                renderProjects();
+            }
+        }
+        function resetForm() {
+            document.getElementById('edit-index').value = '';
+            document.getElementById('project-form').reset();
+        }
+    </script>
+</body>
+</html>
