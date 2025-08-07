@@ -293,7 +293,7 @@
         <script>
         // Dynamically render projects grouped by category from projects.json
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('projects.json')
+            fetch('https://your-backend.onrender.com/projects.json')
                 .then(res => res.json())
                 .then(projects => {
                     const list = document.getElementById('projects-list');
