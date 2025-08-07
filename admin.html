@@ -171,15 +171,22 @@
             }
         }
         // Load projects from JSON
-        let projects = [];
-        function loadProjects() {
-            fetch('projects.json')
-                .then(res => res.json())
-                .then(data => {
-                    projects = data;
-                    renderProjects();
-                });
-        }
+let projects = [];
+function loadProjects() {
+    // Fetch projects from backend API instead of static file
+    fetch('https://portfoliotest-ck75.onrender.com/api/projects')
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to fetch projects from server');
+            return res.json();
+        })
+        .then(data => {
+            projects = data;
+            renderProjects();
+        })
+        .catch(err => {
+            alert('Error loading projects: ' + err);
+        });
+}
         function renderProjects() {
             const list = document.getElementById('project-list');
             list.innerHTML = '';
