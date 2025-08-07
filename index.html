@@ -744,15 +744,22 @@
 
                 <div id="featured-projects-list"></div>
                 <script>
-                // Dynamically render the first 4 projects from projects.json for homepage featured section
+                // --- Featured Projects Section ---
+                // This script fetches the latest project data from your backend API and dynamically renders
+                // the featured projects on the homepage. No manual editing of projects.json is needed.
                 document.addEventListener('DOMContentLoaded', function() {
-                    fetch('projects.json')
-                        .then(res => res.json())
+                    // Fetch the projects.json data from your backend (update the URL as needed)
+                    fetch('https://your-backend.onrender.com/projects.json')
+                        .then(res => res.json()) // Parse the JSON response
                         .then(projects => {
+                            // Get the container for featured projects
                             const list = document.getElementById('featured-projects-list');
                             list.innerHTML = '';
+                            // Loop through projects (latest first)
                             projects.slice().reverse().forEach(proj => {
+                                // Create a string of technology tags for each project
                                 const techTags = proj.tech.map(tag => `<span class="tech-tag" itemprop="keywords">${tag}</span>`).join('\n');
+                                // Build the project card HTML
                                 const card = `
 <article class="project-card" itemscope itemtype="https://schema.org/CreativeWork">
   <div class="project-image">
@@ -775,6 +782,7 @@
   </div>
 </article>
 `;
+                                // Add the card to the featured projects list
                                 list.innerHTML += card;
                             });
                         });
