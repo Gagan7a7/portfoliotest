@@ -202,15 +202,36 @@
                 description: document.getElementById('description').value,
                 tech: document.getElementById('tech').value.split(',').map(t => t.trim())
             };
+            // Change the backend URL here if you deploy to a different service or domain
+            const backendUrl = 'https://portfoliotest-ck75.onrender.com/api/projects';
             if (idx === '') {
-                projects.push(proj);
+                // New project: send to backend
+                fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(proj)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        projects.push(proj);
+                        renderProjects();
+                        resetForm();
+                        alert('Project added and saved to server!');
+                    } else {
+                        alert('Error saving project: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(err => {
+                    alert('Error saving project: ' + err);
+                });
             } else {
+                // Editing existing project (local only)
                 projects[idx] = proj;
+                renderProjects();
+                resetForm();
+                alert('Project updated locally. To save to server, delete and re-add.');
             }
-            renderProjects();
-            resetForm();
-            alert('Note: For static sites, you must manually update projects.json with the new data below.');
-            console.log(JSON.stringify(projects, null, 2));
         };
         function editProject(idx) {
             const proj = projects[idx];
