@@ -12,11 +12,8 @@
 </script>
         <!-- Primary Meta Tags -->
         <title>Gagan BP | Data Analyst – Python, SQL, Excel, Power BI</title>
-        <meta name="description" content="Freelance data analyst skilled in Python, SQL, Excel, Power BI & Tableau. I deliver dashboards, insights, data cleaning, and analysis solutions." />
-        <meta
-            name="keywords"
-            content="freelance data analyst, data analytics consultant, SQL expert, Python data analysis, Power BI developer, Tableau specialist, data visualization, business intelligence, Excel dashboards, data cleaning services, data analyst for hire, Bengaluru data analyst, Bangalore data analyst, Karnataka data analyst, India data analyst, machine learning, AI tools, dashboard automation, business insights, remote data analyst, freelance business intelligence"
-        />
+        <meta name="description" content="Gagan BP: Data analyst portfolio in Bengaluru. Power BI, Python, SQL, Excel, dashboards, business insights, freelance analytics expert." />
+        <meta name="keywords" content="data analyst, data analytics, Power BI, Python, machine learning, Excel, SQL, dashboards, business intelligence, freelance, Bengaluru, India, portfolio, data visualization, data science, reporting, automation, insights, consulting, Tableau, MySQL, remote analyst" />
         <meta name="author" content="Gagan BP" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
         <meta charset="UTF-8" />
@@ -774,12 +771,18 @@
                 <h2 id="projects-heading" class="section-title">
                     Featured Projects
                 </h2>
-
                 <div id="featured-projects-list"></div>
                 <script>
-                // Dynamically render the first 4 projects from projects.json for homepage featured section
+                // Dynamically render all projects from backend API for homepage featured section
                 document.addEventListener('DOMContentLoaded', function() {
-                    fetch('projects.json')
+                    // Use correct API URL for local and deployed environments
+                    let apiUrl = '/api/projects';
+                    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                        apiUrl = 'projects.json'; // fallback to local file for Live Server
+                    } else if (window.location.hostname.endsWith('onrender.com')) {
+                        apiUrl = '/api/projects'; // Render backend
+                    }
+                    fetch(apiUrl)
                         .then(res => res.json())
                         .then(projects => {
                             const list = document.getElementById('featured-projects-list');
@@ -813,66 +816,6 @@
                         });
                 });
                 </script>
-
-                <!-- Project 5: Netflix Movie Analysis -->
-                <article
-                    class="project-card"
-                    itemscope
-                    itemtype="https://schema.org/CreativeWork"
-                >
-                    <div class="project-image">
-                        <img
-                            src="images/Netflix.png"
-                            alt="Netflix content analysis visualization"
-                            loading="lazy"
-                            itemprop="image"
-                        />
-                        <div class="project-overlay">
-                            <a
-                                href="https://colab.research.google.com/drive/1sW9Z8xRmcpbB_UrwSRDPXrnNVaGZ0xZb"
-                                target="_blank"
-                                class="btn btn-primary"
-                                itemprop="url"
-                            >
-                                <i class="fab fa-google"></i>Open in Colab
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 itemprop="headline">Netflix Movie Analysis</h3>
-                        <p itemprop="description">
-                            Analyzed Netflix movie dataset to explore trends in
-                            popularity, genres, ratings, and release years.
-                            Performed data cleaning, visualization, and
-                            statistical analysis to uncover key insights about
-                            factors influencing movie success on the platform.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag" itemprop="keywords"
-                                >Data Analysis</span
-                            >
-                            <span class="tech-tag" itemprop="keywords"
-                                >Python</span
-                            >
-                            <span class="tech-tag" itemprop="keywords"
-                                >Entertainment</span
-                            >
-                            <span class="tech-tag" itemprop="keywords"
-                                >Seaborn</span
-                            >
-                        </div>
-                        <div class="project-actions">
-                            <a
-                                href="https://github.com/GaganBP/Netflix_Movie_Analysis"
-                                target="_blank"
-                                class="btn btn-outline"
-                                itemprop="codeRepository"
-                            >
-                                <i class="fab fa-github"></i>View Code
-                            </a>
-                        </div>
-                    </div>
-                </article>
             </div>
         </section>
 
