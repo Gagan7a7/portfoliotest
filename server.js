@@ -10,7 +10,6 @@ app.delete("/api/projects/:index", (req, res) => {
         try {
             projects = JSON.parse(data);
         } catch (e) {
-            // If file is empty or invalid, return error
             return res.status(500).json({ error: "Invalid projects.json format" });
         }
         if (idx < 0 || idx >= projects.length) {
@@ -25,16 +24,14 @@ app.delete("/api/projects/:index", (req, res) => {
         });
     });
 });
+// ...existing code...
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
-
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-
 
 // Enable CORS for all origins
 app.use(cors());
