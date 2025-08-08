@@ -86,7 +86,34 @@ app.post("/api/projects", (req, res) => {
         });
     });
 });
-
+// API endpoint to update a project by unique title
+app.put("/api/projects/title/:title", (req, res) => {
+    const title = decodeURIComponent(req.params.title);
+    const updatedProject = req.body;
+    const projectsPath = path.join(__dirname, "projects.json");
+    fs.readFile(projectsPath, "utf8", (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to read projects.json" });
+        }
+        let projects = [];
+        try {
+            projects = JSON.parse(data);
+        } catch (e) {
+            return res.status(500).json({ error: "Invalid projects.json format" });
+        }
+        const idx = projects.findIndex(p => p.title === title);
+        if (idx === -1) {
+            return res.status(404).json({ error: "Project not found" });
+        }
+        projects[idx] = updatedProject;
+        fs.writeFile(projectsPath, JSON.stringify(projects, null, 2), (err) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to update projects.json" });
+            }
+            res.json({ success: true, project: updatedProject });
+        });
+    });
+});
 // Main route
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
