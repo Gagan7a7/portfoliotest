@@ -251,12 +251,28 @@ function loadProjects() {
             document.getElementById('description').value = proj.description;
             document.getElementById('tech').value = proj.tech.join(', ');
         }
-        function deleteProject(idx) {
-            if (confirm('Delete this project?')) {
+function deleteProject(idx) {
+    if (confirm('Delete this project?')) {
+        // Send DELETE request to backend
+        const backendUrl = 'https://portfoliotest-ck75.onrender.com/api/projects/' + idx;
+        fetch(backendUrl, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
                 projects.splice(idx, 1);
                 renderProjects();
+                alert('Project deleted from server!');
+            } else {
+                alert('Error deleting project: ' + (data.error || 'Unknown error'));
             }
-        }
+        })
+        .catch(err => {
+            alert('Error deleting project: ' + err);
+        });
+    }
+}
         function resetForm() {
             document.getElementById('edit-index').value = '';
             document.getElementById('project-form').reset();
