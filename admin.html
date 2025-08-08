@@ -174,7 +174,7 @@
 let projects = [];
 function loadProjects() {
     // Fetch projects from backend API instead of static file
-    fetch('https://portfoliotest-ck75.onrender.com/api/projects')
+    fetch('https://databygagan.onrender.com/api/projects')
         .then(res => {
             if (!res.ok) throw new Error('Failed to fetch projects from server');
             return res.json();
@@ -210,7 +210,7 @@ function loadProjects() {
                 tech: document.getElementById('tech').value.split(',').map(t => t.trim())
             };
             // Change the backend URL here if you deploy to a different service or domain
-            const backendUrl = 'https://portfoliotest-ck75.onrender.com/api/projects';
+            const backendUrl = 'https://databygagan.onrender.com/api/projects';
             if (idx === '') {
                 // New project: send to backend
                 fetch(backendUrl, {
@@ -254,7 +254,7 @@ function loadProjects() {
 function deleteProjectByTitle(title) {
     if (confirm('Delete this project?')) {
         // Send DELETE request to backend by title
-        const backendUrl = 'https://portfoliotest-ck75.onrender.com/api/projects/title/' + title;
+        const backendUrl = 'https://databygagan.onrender.com/api/projects/title/' + title;
         fetch(backendUrl, {
             method: 'DELETE'
         })
