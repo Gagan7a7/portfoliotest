@@ -1,3 +1,30 @@
+// API endpoint to delete a project by index
+app.delete("/api/projects/:index", (req, res) => {
+    const idx = parseInt(req.params.index, 10);
+    const projectsPath = path.join(__dirname, "projects.json");
+    fs.readFile(projectsPath, "utf8", (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to read projects.json" });
+        }
+        let projects = [];
+        try {
+            projects = JSON.parse(data);
+        } catch (e) {
+            // If file is empty or invalid, return error
+            return res.status(500).json({ error: "Invalid projects.json format" });
+        }
+        if (idx < 0 || idx >= projects.length) {
+            return res.status(400).json({ error: "Invalid project index" });
+        }
+        projects.splice(idx, 1);
+        fs.writeFile(projectsPath, JSON.stringify(projects, null, 2), (err) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to update projects.json" });
+            }
+            res.json({ success: true });
+        });
+    });
+});
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
