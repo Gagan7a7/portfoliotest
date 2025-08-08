@@ -1,29 +1,3 @@
-// API endpoint to delete a project by index
-app.delete("/api/projects/:index", (req, res) => {
-    const idx = parseInt(req.params.index, 10);
-    const projectsPath = path.join(__dirname, "projects.json");
-    fs.readFile(projectsPath, "utf8", (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: "Failed to read projects.json" });
-        }
-        let projects = [];
-        try {
-            projects = JSON.parse(data);
-        } catch (e) {
-            return res.status(500).json({ error: "Invalid projects.json format" });
-        }
-        if (idx < 0 || idx >= projects.length) {
-            return res.status(400).json({ error: "Invalid project index" });
-        }
-        projects.splice(idx, 1);
-        fs.writeFile(projectsPath, JSON.stringify(projects, null, 2), (err) => {
-            if (err) {
-                return res.status(500).json({ error: "Failed to update projects.json" });
-            }
-            res.json({ success: true });
-        });
-    });
-});
 // ...existing code...
 const express = require("express");
 const path = require("path");
@@ -43,6 +17,34 @@ app.use(express.json());
 app.use(express.static("."));
 // Serve images
 app.use("/images", express.static("images"));
+
+// API endpoint to delete a project by unique title
+app.delete("/api/projects/title/:title", (req, res) => {
+    const title = decodeURIComponent(req.params.title);
+    const projectsPath = path.join(__dirname, "projects.json");
+    fs.readFile(projectsPath, "utf8", (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to read projects.json" });
+        }
+        let projects = [];
+        try {
+            projects = JSON.parse(data);
+        } catch (e) {
+            return res.status(500).json({ error: "Invalid projects.json format" });
+        }
+        const idx = projects.findIndex(p => p.title === title);
+        if (idx === -1) {
+            return res.status(404).json({ error: "Project not found" });
+        }
+        projects.splice(idx, 1);
+        fs.writeFile(projectsPath, JSON.stringify(projects, null, 2), (err) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to update projects.json" });
+            }
+            res.json({ success: true });
+        });
+    });
+});
 
 // API endpoint to get all projects
 app.get("/api/projects", (req, res) => {
