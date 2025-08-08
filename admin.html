@@ -211,7 +211,6 @@ function loadProjects() {
                 description: document.getElementById('description').value,
                 tech: document.getElementById('tech').value.split(',').map(t => t.trim())
             };
-            // Change the backend URL here if you deploy to a different service or domain
             const backendUrl = 'https://databygagan.onrender.com/api/projects';
             if (idx === '') {
                 // New project: send to backend
@@ -235,11 +234,27 @@ function loadProjects() {
                     alert('Error saving project: ' + err);
                 });
             } else {
-                // Editing existing project (local only)
-                projects[idx] = proj;
-                renderProjects();
-                resetForm();
-                alert('Project updated locally. To save to server, delete and re-add.');
+                // Editing existing project: send PUT request to backend
+                const editTitle = encodeURIComponent(projects[idx].title);
+                fetch(`${backendUrl}/title/${editTitle}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(proj)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        projects[idx] = proj;
+                        renderProjects();
+                        resetForm();
+                        alert('Project updated on server!');
+                    } else {
+                        alert('Error updating project: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(err => {
+                    alert('Error updating project: ' + err);
+                });
             }
         };
         function editProject(idx) {
